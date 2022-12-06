@@ -96,7 +96,6 @@ bool connectToServer() {
       pRemoteCharacteristic->registerForNotify(notifyCallback);
 
     connected = true;
-    delay(10000);
     return true;
 }
 /**
@@ -133,15 +132,11 @@ void setup() {
   // scan to run for 5 seconds.
   BLEScan* pBLEScan = BLEDevice::getScan();
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  M5.Lcd.print(doConnect);
   pBLEScan->setInterval(1349);
   pBLEScan->setWindow(449);
   pBLEScan->setActiveScan(true);
   pBLEScan->start(5, false);
-  delay(20000);
-  ledcSetup(ledChannel, freq, resolution);
-  ledcAttachPin(servo_pin, ledChannel);
-  ledcWrite(ledChannel, 256);  // 0°
+  ledcSetup(ledChannel, freq, resolution); // 0°
 } // End of setup.
 
 
@@ -152,10 +147,7 @@ void loop() {
   // BLE Server with which we wish to connect.  Now we connect to it.  Once we are 
   // connected we set the connected flag to be true.
   if (doConnect == true) {
-    M5.Lcd.print(doConnect);
-    M5.Lcd.print("Inside loop if");
     if (connectToServer()) {
-      M5.Lcd.print("We are now connected to the BLE Server.");
     } else {
       M5.Lcd.print("We have failed to connect to the server; there is nothin more we will do.");
     }
@@ -167,26 +159,26 @@ void loop() {
   if (connected) {
     if(pRemoteCharacteristic->canRead()) {
       std::string value = pRemoteCharacteristic->readValue();
-      M5.Lcd.print("The characteristic value was: ");
-      M5.Lcd.print(value.c_str());
       if(value =="ALERT"){
-        M5.Lcd.print("--- inside Alert if ---");
+        M5.Lcd.fillScreen(BLACK);
+        M5.Lcd.setTextColor(WHITE);
+        M5.Lcd.setCursor(25, 80, 1);
+        M5.Lcd.print("BRAKES ON");
         ledcWriteTone(ledChannel, 1250);
-        delay(1000);
+        delay(700);
         ledcWriteTone(ledChannel, 0);
-        delay(1000);
+        delay(700);
+      }
+      else{
+        M5.Lcd.fillScreen(BLACK);
+        M5.Lcd.setTextColor(WHITE);
+        M5.Lcd.setCursor(25, 80, 4);
+        M5.Lcd.print("Normal Mode");
       }
     }
-    String newValue = "Time since boot: " + String(millis()/1000);
-    M5.Lcd.print("Setting new characteristic value to \"" + newValue + "\"");
-    
-    // Set the characteristic's value to be the array of bytes that is actually a string.
-    pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
   }else if(doScan){
     BLEDevice::getScan()->start(0);  // this is just eample to start scan after disconnect, most likely there is better way to do it in arduino
   }
-  
-  delay(10000); // Delay a second between loops.
 } // End of loop
 
 void playMusic(const uint8_t* music_data, uint16_t sample_rate) {

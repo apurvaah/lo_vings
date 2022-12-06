@@ -5,7 +5,7 @@
 #include <BLEServer.h>
 
 #define COUNT_LOW   1500
-#define COUNT_HIGH  8500
+#define COUNT_HIGH  9000
 #define TIMER_WIDTH 16
 
 // The remote service we wish to create
@@ -14,9 +14,9 @@
 #define SERVICE_UUID "cdcfcdb1-02a5-4870-8c53-c9f261b865a3"
 
 // The remote service we wish to connect to.
-static BLEUUID serviceUUID("b952a134-a33b-4a39-bc07-cd88c1bf3ef0");
+static BLEUUID serviceUUID("e6cfac45-5796-4497-86cf-0faeb67c2b40");
 // The characteristic of the remote service we are interested in.
-static BLEUUID    charUUID("8ac406f9-584e-435f-b0dc-613e83c84361");
+static BLEUUID    charUUID("17afd00e-ac19-449e-90f7-c11d689c4517");
 
 static boolean doConnect = false;
 static boolean connected = false;
@@ -135,7 +135,6 @@ void setup() {
   // scan to run for 5 seconds.
   BLEScan* pBLEScan = BLEDevice::getScan();
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  M5.Lcd.print(doConnect);
   pBLEScan->setInterval(1349);
   pBLEScan->setWindow(449);
   pBLEScan->setActiveScan(true);
@@ -187,7 +186,6 @@ void loop() {
       M5.Lcd.fillScreen(BLACK);
       M5.Lcd.setTextColor(WHITE);
       M5.Lcd.setCursor(25, 80, 4);
-      M5.Lcd.print(value.c_str());
       if(value =="ALERT"){
         pCharacteristic_1->setValue("ALERT");
         for (int i = COUNT_LOW; i < COUNT_HIGH; i = i + 100) {
@@ -205,10 +203,6 @@ void loop() {
         M5.Lcd.print("No Alert");
       }
     }
-    String newValue = "Time since boot: " + String(millis()/1000);
-    
-    // Set the characteristic's value to be the array of bytes that is actually a string.
-    pRemoteCharacteristic->writeValue(newValue.c_str(), newValue.length());
   }else if(doScan){
     BLEDevice::getScan()->start(0);  // this is just eample to start scan after disconnect, most likely there is better way to do it in arduino
   }

@@ -15,9 +15,9 @@
 #define ToF_ADDR 0x29  // the iic address of tof
 
 // The remote service we wish to connect to.
-#define CHARACTERISTIC_UUID "8ac406f9-584e-435f-b0dc-613e83c84361"
+#define CHARACTERISTIC_UUID "17afd00e-ac19-449e-90f7-c11d689c4517"
 // The characteristic of the remote service we are interested in.
-#define SERVICE_UUID "b952a134-a33b-4a39-bc07-cd88c1bf3ef0"
+#define SERVICE_UUID "e6cfac45-5796-4497-86cf-0faeb67c2b40"
 
 static boolean doConnect = false;
 static boolean connected = false;
@@ -64,7 +64,7 @@ void loop() {
     //     M5.Lcd.print("connected to 1 device");
     //     // continue statement
     //   }
-    if (proximityFunc()<40){
+    if (proximityFunc()<80){
       pCharacteristic->setValue("ALERT");
     }
     else{
