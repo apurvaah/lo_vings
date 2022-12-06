@@ -137,6 +137,7 @@ void setup() {
   pBLEScan->setActiveScan(true);
   pBLEScan->start(5, false);
   ledcSetup(ledChannel, freq, resolution); // 0°
+  ledcAttachPin(servo_pin, ledChannel);
 } // End of setup.
 
 
